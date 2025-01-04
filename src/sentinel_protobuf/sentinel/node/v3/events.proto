@@ -1,0 +1,51 @@
+syntax = "proto3";
+package sentinel.node.v3;
+
+import "gogoproto/gogo.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/hub/v12/x/node/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventCreate {
+  string node_address = 1;
+  string gigabyte_prices = 2;
+  string hourly_prices = 3;
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
+}
+
+message EventPay {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string acc_address = 2;
+  string node_address = 3;
+  string payment = 4;
+  string staking_reward = 5;
+}
+
+message EventRefund {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string acc_address = 2;
+  string amount = 3;
+}
+
+message EventUpdateDetails {
+  string node_address = 1;
+  string gigabyte_prices = 2;
+  string hourly_prices = 3;
+  string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
+}
+
+message EventUpdateStatus {
+  string node_address = 1;
+  sentinel.types.v1.Status status = 2;
+}
+
+message EventCreateSession {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string acc_address = 2;
+  string node_address = 3;
+  string price = 4;
+  int64 max_gigabytes = 5;
+  int64 max_hours = 6;
+}

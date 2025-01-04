@@ -1,23 +1,23 @@
 {
   "https://github.com/sentinel-official/hub.git": {
     "include": true,
-    "branch": "v0.11.3",
+    "branch": "development",
     "paths": ["proto/sentinel"]
   },
   "https://github.com/cosmos/cosmos-sdk.git": {
     "include": true,
-    "branch": "v0.45.4",
+    "branch": "v0.47.15",
     "paths": ["proto/cosmos"]
   },
-  "https://github.com/tendermint/tendermint.git": {
+  "https://github.com/cometbft/cometbft.git": {
     "include": true,
-    "branch": "v0.34.19",
+    "branch": "v0.37.13",
     "paths": ["proto/tendermint"]
   },
   "https://github.com/cosmos/ibc-go": {
     "include": true,
-    "branch": "v3.0.0",
-    "paths": ["proto/ibc", "third_party/proto/google"]
+    "branch": "v7.8.0",
+    "paths": ["proto/ibc"]
   },
   "https://github.com/cosmos/cosmos-proto.git": {
     "include": true,
@@ -33,11 +33,5 @@
     "include": true,
     "branch": "master",
     "paths": ["proto/cosmos/ics23/v1/proofs.proto"]
-  },
-  "https://github.com/cosmos/interchain-security.git": {
-    "include": true,
-    "branch": "v1.0.0",
-    "paths": ["proto/interchain_security/ccv"]
   }
-
 }

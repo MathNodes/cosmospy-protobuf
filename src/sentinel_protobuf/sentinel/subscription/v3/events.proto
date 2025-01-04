@@ -1,0 +1,58 @@
+syntax = "proto3";
+package sentinel.subscription.v3;
+
+import "gogoproto/gogo.proto";
+import "sentinel/types/v1/status.proto";
+
+option go_package = "github.com/sentinel-official/hub/v12/x/subscription/types/v3";
+option (gogoproto.equal_all) = false;
+option (gogoproto.goproto_getters_all) = false;
+
+message EventAllocate {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string acc_address = 2;
+  string granted_bytes = 3;
+  string utilised_bytes = 4;
+}
+
+message EventCreate {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
+  string acc_address = 3;
+  string prov_address = 4;
+  string price = 5;
+}
+
+message EventCreateSession {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  string acc_address = 2;
+  string node_address = 3;
+  uint64 subscription_id = 4 [(gogoproto.customname) = "SubscriptionID"];
+}
+
+message EventPay {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
+  string acc_address = 3;
+  string prov_address = 4;
+  string payment = 5;
+  string staking_reward = 6;
+}
+
+message EventRenew {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
+  string acc_address = 3;
+  string prov_address = 4;
+  string price = 5;
+}
+
+message EventUpdate {
+  uint64 id = 1 [(gogoproto.customname) = "ID"];
+  uint64 plan_id = 2 [(gogoproto.customname) = "PlanID"];
+  string acc_address = 3;
+  string renewal_price_policy = 4;
+  sentinel.types.v1.Status status = 5;
+  string inactive_at = 6;
+  string status_at = 7;
+}

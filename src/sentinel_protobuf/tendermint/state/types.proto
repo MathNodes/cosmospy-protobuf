@@ -1,7 +1,7 @@
 syntax = "proto3";
 package tendermint.state;
 
-option go_package = "github.com/tendermint/tendermint/proto/tendermint/state";
+option go_package = "github.com/cometbft/cometbft/proto/tendermint/state";
 
 import "gogoproto/gogo.proto";
 import "tendermint/abci/types.proto";
@@ -30,6 +30,11 @@ message ValidatorsInfo {
 message ConsensusParamsInfo {
   tendermint.types.ConsensusParams consensus_params    = 1 [(gogoproto.nullable) = false];
   int64                            last_height_changed = 2;
+}
+
+message ABCIResponsesInfo {
+  ABCIResponses abci_responses = 1;
+  int64         height         = 2;
 }
 
 message Version {

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "sentinel_protobuf"
 
-version = "0.3.2"
+version = "0.4.0"
 
 description = "This package contains a compiled python version of all sentinel protobuf files with their dependencies"
 authors = [
