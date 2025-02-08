@@ -1,0 +1,48 @@
+{
+  "https://github.com/protocolbuffers/protobuf": {
+    "include": true,
+    "branch": "main",
+    "paths": ["src/google/protobuf"]
+  },
+  "https://github.com/googleapis/googleapis": {
+    "include": true,
+    "branch": "master",
+    "paths": ["google/type", "google/rpc", "google/longrunning", "google/bytestream",  "google/api", "google/iam", "google/storage"]
+  },
+
+  "https://github.com/sentinel-official/hub.git": {
+    "include": true,
+    "branch": "development",
+    "paths": ["proto/sentinel"]
+  },
+  "https://github.com/cosmos/cosmos-sdk.git": {
+    "include": true,
+    "branch": "v0.47.15",
+    "paths": ["proto/cosmos", "proto/amino"]
+  },
+  "https://github.com/cometbft/cometbft.git": {
+    "include": true,
+    "branch": "v0.37.13",
+    "paths": ["proto/tendermint"]
+  },
+  "https://github.com/cosmos/ibc-go": {
+    "include": true,
+    "branch": "v7.8.0",
+    "paths": ["proto/ibc"]
+  },
+  "https://github.com/cosmos/cosmos-proto.git": {
+    "include": true,
+    "branch": "main",
+    "paths": ["proto/cosmos_proto"]
+  },
+  "https://github.com/cosmos/gogoproto.git": {
+    "include": true,
+    "branch": "main",
+    "paths": ["gogoproto"]
+  },
+  "https://github.com/confio/ics23.git": {
+    "include": true,
+    "branch": "master",
+    "paths": ["proto/cosmos/ics23/v1/proofs.proto"]
+  }
+}

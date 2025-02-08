@@ -9,19 +9,19 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgEndRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   uint64 rating = 3;
 }
 
 message MsgStartRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   string node = 3;
 }
 
 message MsgUpdateRequest {
-  string from = 1;
+  string frm = 1;
   Proof proof = 2 [(gogoproto.nullable) = false];
   bytes signature = 3;
 }

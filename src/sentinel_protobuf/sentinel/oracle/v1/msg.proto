@@ -9,7 +9,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCreateAssetRequest {
-  string from = 1;
+  string frm = 1;
   string denom = 2;
   int64 decimals = 3;
   string base_asset_denom = 4;
@@ -17,12 +17,12 @@ message MsgCreateAssetRequest {
 }
 
 message MsgDeleteAssetRequest {
-  string from = 1;
+  string frm = 1;
   string denom = 2;
 }
 
 message MsgUpdateAssetRequest {
-  string from = 1;
+  string frm = 1;
   string denom = 2;
   int64 decimals = 3;
   string base_asset_denom = 4;
@@ -30,7 +30,7 @@ message MsgUpdateAssetRequest {
 }
 
 message MsgUpdateParamsRequest {
-  string from = 1;
+  string frm = 1;
   Params params = 2 [(gogoproto.nullable) = false];
 }
 

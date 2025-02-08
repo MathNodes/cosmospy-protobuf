@@ -11,7 +11,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCreateRequest {
-  string from = 1;
+  string frm = 1;
   google.protobuf.Duration duration = 2 [
     (gogoproto.stdduration) = true,
     (gogoproto.nullable) = false
@@ -24,25 +24,25 @@ message MsgCreateRequest {
 }
 
 message MsgLinkNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUnlinkNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUpdateStatusRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.Status status = 3;
 }
 
 message MsgSubscribeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
 }

@@ -10,7 +10,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgRegisterRequest {
-  string from = 1;
+  string frm = 1;
   string provider = 2;
   repeated cosmos.base.v1beta1.Coin price = 3 [
     (gogoproto.nullable) = false,
@@ -20,12 +20,12 @@ message MsgRegisterRequest {
 }
 
 message MsgSetStatusRequest {
-  string from = 1;
+  string frm = 1;
   sentinel.types.v1.Status status = 2;
 }
 
 message MsgUpdateRequest {
-  string from = 1;
+  string frm = 1;
   string provider = 2;
   repeated cosmos.base.v1beta1.Coin price = 3 [
     (gogoproto.nullable) = false,

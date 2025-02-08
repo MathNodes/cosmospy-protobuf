@@ -11,7 +11,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgAddRequest {
-  string from = 1;
+  string frm = 1;
   repeated cosmos.base.v1beta1.Coin price = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -27,19 +27,19 @@ message MsgAddRequest {
 }
 
 message MsgAddNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   string address = 3;
 }
 
 message MsgRemoveNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   string address = 3;
 }
 
 message MsgSetStatusRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   sentinel.types.v1.Status status = 3;
 }

@@ -9,7 +9,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgAddQuotaRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   string address = 3;
   string bytes = 4 [
@@ -19,24 +19,24 @@ message MsgAddQuotaRequest {
 }
 
 message MsgCancelRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
 }
 
 message MsgSubscribeToNodeRequest {
-  string from = 1;
+  string frm = 1;
   string address = 2;
   cosmos.base.v1beta1.Coin deposit = 3 [(gogoproto.nullable) = false];
 }
 
 message MsgSubscribeToPlanRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   string denom = 3;
 }
 
 message MsgUpdateQuotaRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2;
   string address = 3;
   string bytes = 4 [

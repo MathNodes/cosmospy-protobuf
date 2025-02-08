@@ -11,33 +11,32 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCreatePlanRequest {
-  string from = 1;
+  string frm = 1;
   int64 gigabytes = 2;
   int64 hours = 3;
   repeated sentinel.types.v1.Price prices = 4 [(gogoproto.nullable) = false];
-  bool private = 5;
 }
 
 message MsgLinkNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUnlinkNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUpdatePlanStatusRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.Status status = 3;
 }
 
 message MsgStartSessionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;

@@ -10,18 +10,18 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCancelSubscriptionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
 }
 
 message MsgRenewSubscriptionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
 }
 
 message MsgShareSubscriptionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string acc_address = 3;
   string bytes = 4 [
@@ -31,26 +31,26 @@ message MsgShareSubscriptionRequest {
 }
 
 message MsgStartSubscriptionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;
 }
 
 message MsgUpdateSubscriptionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 3;
 }
 
 message MsgStartSessionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUpdateParamsRequest {
-  string from = 1;
+  string frm = 1;
   sentinel.subscription.v2.Params params = 2 [(gogoproto.nullable) = false];
 }
 

@@ -10,12 +10,12 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCancelSessionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
 }
 
 message MsgUpdateSessionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string download_bytes = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -33,7 +33,7 @@ message MsgUpdateSessionRequest {
 }
 
 message MsgUpdateParamsRequest {
-  string from = 1;
+  string frm = 1;
   sentinel.session.v2.Params params = 2 [(gogoproto.nullable) = false];
 }
 

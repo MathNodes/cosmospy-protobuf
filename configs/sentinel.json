@@ -1,4 +1,10 @@
 {
+  "https://github.com/googleapis/googleapis": {
+    "include": true,
+    "branch": "master",
+    "paths": ["google"]
+  },
+
   "https://github.com/sentinel-official/hub.git": {
     "include": true,
     "branch": "development",
@@ -33,10 +39,5 @@
     "include": true,
     "branch": "master",
     "paths": ["proto/cosmos/ics23/v1/proofs.proto"]
-  },
-  "https://github.com/googleapis/googleapis": {
-    "include": true,
-    "branch": "master",
-    "paths": ["google"]
   }
 }

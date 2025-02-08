@@ -11,26 +11,26 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgRegisterNodeRequest {
-  string from = 1;
+  string frm = 1;
   repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
   repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
   string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
 }
 
 message MsgUpdateNodeDetailsRequest {
-  string from = 1;
+  string frm = 1;
   repeated sentinel.types.v1.Price gigabyte_prices = 2 [(gogoproto.nullable) = false];
   repeated sentinel.types.v1.Price hourly_prices = 3 [(gogoproto.nullable) = false];
   string remote_url = 4 [(gogoproto.customname) = "RemoteURL"];
 }
 
 message MsgUpdateNodeStatusRequest {
-  string from = 1;
+  string frm = 1;
   sentinel.types.v1.Status status = 2;
 }
 
 message MsgStartSessionRequest {
-  string from = 1;
+  string frm = 1;
   string node_address = 2;
   int64 gigabytes = 3;
   int64 hours = 4;
@@ -38,7 +38,7 @@ message MsgStartSessionRequest {
 }
 
 message MsgUpdateParamsRequest {
-  string from = 1;
+  string frm = 1;
   Params params = 2 [(gogoproto.nullable) = false];
 }
 
