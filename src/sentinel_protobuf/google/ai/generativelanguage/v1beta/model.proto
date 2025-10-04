@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -106,4 +106,7 @@ message Model {
   // If empty, indicates the model doesn't use top-k sampling, and `top_k` isn't
   // allowed as a generation parameter.
   optional int32 top_k = 11;
+
+  // Whether the model supports thinking.
+  bool thinking = 15;
 }

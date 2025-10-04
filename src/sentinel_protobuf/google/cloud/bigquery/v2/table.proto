@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "cloud.google.com/go/bigquery/apiv2/bigquerypb;bigquerypb";
+option go_package = "cloud.google.com/go/bigquery/v2/apiv2/bigquerypb;bigquerypb";
 option java_outer_classname = "TableProto";
 option java_package = "com.google.cloud.bigquery.v2";
 
@@ -409,7 +409,8 @@ message Table {
   ExternalDataConfiguration external_data_configuration = 19
       [(google.api.field_behavior) = OPTIONAL];
 
-  // Optional. Specifies the configuration of a BigLake managed table.
+  // Optional. Specifies the configuration of a BigQuery table for Apache
+  // Iceberg.
   BigLakeConfiguration biglake_configuration = 45
       [(google.api.field_behavior) = OPTIONAL];
 

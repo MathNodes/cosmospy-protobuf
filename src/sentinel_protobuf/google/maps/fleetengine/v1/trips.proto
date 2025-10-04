@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -224,6 +224,9 @@ message Trip {
   // The subset of Trip fields that are populated and how they should be
   // interpreted.
   TripView view = 31;
+
+  // A list of custom Trip attributes. Each attribute must have a unique key.
+  repeated TripAttribute attributes = 35;
 }
 
 // The actual location where a stop (pickup/dropoff) happened.

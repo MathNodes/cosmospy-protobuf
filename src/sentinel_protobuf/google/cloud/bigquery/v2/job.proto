@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/cloud/bigquery/v2/data_format_options.proto";
 import "google/cloud/bigquery/v2/dataset_reference.proto";
+import "google/cloud/bigquery/v2/encryption_config.proto";
 import "google/cloud/bigquery/v2/error.proto";
 import "google/cloud/bigquery/v2/job_config.proto";
 import "google/cloud/bigquery/v2/job_creation_reason.proto";
@@ -35,7 +36,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "cloud.google.com/go/bigquery/apiv2/bigquerypb;bigquerypb";
+option go_package = "cloud.google.com/go/bigquery/v2/apiv2/bigquerypb;bigquerypb";
 option java_outer_classname = "JobProto";
 option java_package = "com.google.cloud.bigquery.v2";
 
@@ -162,7 +163,6 @@ message Job {
   ];
 
   // Output only. The reason why a Job was created.
-  // [Preview](https://cloud.google.com/products/#product-launch-stages)
   JobCreationReason job_creation_reason = 14
       [(google.api.field_behavior) = OUTPUT_ONLY];
 }
@@ -557,6 +557,27 @@ message QueryRequest {
   google.protobuf.UInt32Value timeout_ms = 6
       [(google.api.field_behavior) = OPTIONAL];
 
+  // Optional. Job timeout in milliseconds. If this time limit is exceeded,
+  // BigQuery will attempt to stop a longer job, but may not always succeed in
+  // canceling it before the job completes. For example, a job that takes more
+  // than 60 seconds to complete has a better chance of being stopped than a job
+  // that takes 10 seconds to complete. This timeout applies to the query even
+  // if a job does not need to be created.
+  optional int64 job_timeout_ms = 26 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. A target limit on the rate of slot consumption by this query. If
+  // set to a value > 0, BigQuery will attempt to limit the rate of slot
+  // consumption by this query to keep it below the configured limit, even if
+  // the query is eligible for more slots based on fair scheduling. The unused
+  // slots will be available for other jobs and queries to use.
+  //
+  // Note: This feature is not yet generally available.
+  optional int32 max_slots = 28 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Custom encryption configuration (e.g., Cloud KMS keys)
+  EncryptionConfiguration destination_encryption_configuration = 27
+      [(google.api.field_behavior) = OPTIONAL];
+
   // Optional. If set to true, BigQuery doesn't run the job. Instead, if the
   // query is valid, BigQuery returns statistics about the job such as how many
   // bytes would be processed. If the query is invalid, an error returns. The
@@ -656,9 +677,18 @@ message QueryRequest {
   //
   // If set, the query request will follow the behavior described
   // JobCreationMode.
-  // [Preview](https://cloud.google.com/products/#product-launch-stages)
   JobCreationMode job_creation_mode = 22
       [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. The reservation that jobs.query request would use. User can
+  // specify a reservation to execute the job.query. The expected format is
+  // `projects/{project}/locations/{location}/reservations/{reservation}`.
+  optional string reservation = 24 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.resource_reference) = {
+      type: "bigqueryreservation.googleapis.com/Reservation"
+    }
+  ];
 
   // Optional. This is only supported for SELECT query. If set, the query is
   // allowed to write results incrementally to the temporary result table. This
@@ -689,12 +719,10 @@ message QueryResponse {
   //
   // Only relevant when a job_reference is present in the response.
   // If job_reference is not present it will always be unset.
-  // [Preview](https://cloud.google.com/products/#product-launch-stages)
   JobCreationReason job_creation_reason = 15
       [(google.api.field_behavior) = OPTIONAL];
 
   // Auto-generated ID for the query.
-  // [Preview](https://cloud.google.com/products/#product-launch-stages)
   string query_id = 14;
 
   // Output only. The geographic location of the query.

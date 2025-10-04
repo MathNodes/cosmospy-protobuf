@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -107,8 +107,8 @@ message MerchantReviewAttributes {
   optional google.protobuf.Timestamp review_time = 14
       [(google.api.field_behavior) = REQUIRED];
 
-  // Required. The language of the review defined by BCP-47 language code.
-  optional string review_language = 15 [(google.api.field_behavior) = REQUIRED];
+  // Optional. The language of the review defined by BCP-47 language code.
+  optional string review_language = 15 [(google.api.field_behavior) = OPTIONAL];
 
   // Optional. The country where the reviewer made the order defined by ISO
   // 3166-1 Alpha-2 Country Code.

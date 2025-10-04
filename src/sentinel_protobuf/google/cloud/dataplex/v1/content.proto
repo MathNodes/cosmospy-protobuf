@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ option java_multiple_files = true;
 option java_outer_classname = "ContentProto";
 option java_package = "com.google.cloud.dataplex.v1";
 
-// ContentService manages Notebook and SQL Scripts for Dataplex.
+// ContentService manages Notebook and SQL Scripts for Dataplex Universal
+// Catalog.
 service ContentService {
   option (google.api.default_host) = "dataplex.googleapis.com";
   option (google.api.oauth_scopes) =

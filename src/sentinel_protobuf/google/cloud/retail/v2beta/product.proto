@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -571,7 +571,6 @@ message Product {
   //
   // * [name][google.cloud.retail.v2beta.Product.name]
   // * [color_info][google.cloud.retail.v2beta.Product.color_info]
-  //
   //
   // Note: Returning more fields in
   // [SearchResponse][google.cloud.retail.v2beta.SearchResponse] can increase

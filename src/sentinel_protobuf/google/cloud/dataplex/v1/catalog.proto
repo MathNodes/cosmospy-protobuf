@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,10 +37,10 @@ option php_namespace = "Google\\Cloud\\Dataplex\\V1";
 option ruby_package = "Google::Cloud::Dataplex::V1";
 
 // The primary resources offered by this service are EntryGroups, EntryTypes,
-// AspectTypes, and Entries. They collectively let data administrators organize,
-// manage, secure, and catalog data located across cloud projects in their
-// organization in a variety of storage systems, including Cloud Storage and
-// BigQuery.
+// AspectTypes, Entries and EntryLinks. They collectively let data
+// administrators organize, manage, secure, and catalog data located across
+// cloud projects in their organization in a variety of storage systems,
+// including Cloud Storage and BigQuery.
 service CatalogService {
   option (google.api.default_host) = "dataplex.googleapis.com";
   option (google.api.oauth_scopes) =
@@ -254,11 +254,6 @@ service CatalogService {
   }
 
   // Gets an Entry.
-  //
-  // **Caution**: The BigQuery metadata that is stored in Dataplex Catalog is
-  // changing. For more information, see [Changes to BigQuery metadata stored in
-  // Dataplex
-  // Catalog](https://cloud.google.com/dataplex/docs/biqquery-metadata-changes).
   rpc GetEntry(GetEntryRequest) returns (Entry) {
     option (google.api.http) = {
       get: "/v1/{name=projects/*/locations/*/entryGroups/*/entries/**}"
@@ -266,12 +261,7 @@ service CatalogService {
     option (google.api.method_signature) = "name";
   }
 
-  // Looks up a single Entry by name using the permission on the source system.
-  //
-  // **Caution**: The BigQuery metadata that is stored in Dataplex Catalog is
-  // changing. For more information, see [Changes to BigQuery metadata stored in
-  // Dataplex
-  // Catalog](https://cloud.google.com/dataplex/docs/biqquery-metadata-changes).
+  // Looks up an entry by name using the permission on the source system.
   rpc LookupEntry(LookupEntryRequest) returns (Entry) {
     option (google.api.http) = {
       get: "/v1/{name=projects/*/locations/*}:lookupEntry"
@@ -286,8 +276,8 @@ service CatalogService {
     option (google.api.method_signature) = "name,query";
   }
 
-  // Creates a metadata job. For example, use a metadata job to import Dataplex
-  // Catalog entries and aspects from a third-party system into Dataplex.
+  // Creates a metadata job. For example, use a metadata job to import metadata
+  // from a third-party system into Dataplex Universal Catalog.
   rpc CreateMetadataJob(CreateMetadataJobRequest)
       returns (google.longrunning.Operation) {
     option (google.api.http) = {
@@ -333,6 +323,31 @@ service CatalogService {
     };
     option (google.api.method_signature) = "name";
   }
+
+  // Creates an Entry Link.
+  rpc CreateEntryLink(CreateEntryLinkRequest) returns (EntryLink) {
+    option (google.api.http) = {
+      post: "/v1/{parent=projects/*/locations/*/entryGroups/*}/entryLinks"
+      body: "entry_link"
+    };
+    option (google.api.method_signature) = "parent,entry_link,entry_link_id";
+  }
+
+  // Deletes an Entry Link.
+  rpc DeleteEntryLink(DeleteEntryLinkRequest) returns (EntryLink) {
+    option (google.api.http) = {
+      delete: "/v1/{name=projects/*/locations/*/entryGroups/*/entryLinks/*}"
+    };
+    option (google.api.method_signature) = "name";
+  }
+
+  // Gets an Entry Link.
+  rpc GetEntryLink(GetEntryLinkRequest) returns (EntryLink) {
+    option (google.api.http) = {
+      get: "/v1/{name=projects/*/locations/*/entryGroups/*/entryLinks/*}"
+    };
+    option (google.api.method_signature) = "name";
+  }
 }
 
 // AspectType is a template for creating Aspects, and represents the
@@ -345,11 +360,11 @@ message AspectType {
     singular: "aspectType"
   };
 
-  // Autorization for an AspectType.
+  // Authorization for an AspectType.
   message Authorization {
     // Immutable. The IAM permission grantable on the EntryGroup to allow access
-    // to instantiate Aspects of Dataplex owned AspectTypes, only settable for
-    // Dataplex owned Types.
+    // to instantiate Aspects of Dataplex Universal Catalog owned AspectTypes,
+    // only settable for Dataplex Universal Catalog owned Types.
     string alternate_use_permission = 1
         [(google.api.field_behavior) = IMMUTABLE];
   }
@@ -422,8 +437,8 @@ message AspectType {
     // Primitive types:
     //
     // * string
-    // * integer
-    // * boolean
+    // * int
+    // * bool
     // * double
     // * datetime. Must be of the format RFC3339 UTC "Zulu" (Examples:
     // "2014-10-02T15:01:23Z" and "2014-10-02T15:01:23.045123456Z").
@@ -595,8 +610,8 @@ message EntryType {
   // Authorization for an Entry Type.
   message Authorization {
     // Immutable. The IAM permission grantable on the Entry Group to allow
-    // access to instantiate Entries of Dataplex owned Entry Types, only
-    // settable for Dataplex owned Types.
+    // access to instantiate Entries of Dataplex Universal Catalog owned Entry
+    // Types, only settable for Dataplex Universal Catalog owned Types.
     string alternate_use_permission = 1
         [(google.api.field_behavior) = IMMUTABLE];
   }
@@ -715,11 +730,13 @@ message Entry {
     (google.api.field_behavior) = IMMUTABLE
   ];
 
-  // Output only. The time when the entry was created in Dataplex.
+  // Output only. The time when the entry was created in Dataplex Universal
+  // Catalog.
   google.protobuf.Timestamp create_time = 5
       [(google.api.field_behavior) = OUTPUT_ONLY];
 
-  // Output only. The time when the entry was last updated in Dataplex.
+  // Output only. The time when the entry was last updated in Dataplex Universal
+  // Catalog.
   google.protobuf.Timestamp update_time = 6
       [(google.api.field_behavior) = OUTPUT_ONLY];
 
@@ -812,7 +829,7 @@ message EntrySource {
 message CreateEntryGroupRequest {
   // Required. The resource name of the entryGroup, of the form:
   // projects/{project_number}/locations/{location_id}
-  // where `location_id` refers to a GCP region.
+  // where `location_id` refers to a Google Cloud region.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -955,7 +972,7 @@ message UpdateEntryTypeRequest {
   bool validate_only = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Delele EntryType Request.
+// Delete EntryType Request.
 message DeleteEntryTypeRequest {
   // Required. The resource name of the EntryType:
   // `projects/{project_number}/locations/{location_id}/entryTypes/{entry_type_id}`.
@@ -1072,7 +1089,7 @@ message UpdateAspectTypeRequest {
   bool validate_only = 3 [(google.api.field_behavior) = OPTIONAL];
 }
 
-// Delele AspectType Request.
+// Delete AspectType Request.
 message DeleteAspectTypeRequest {
   // Required. The resource name of the AspectType:
   // `projects/{project_number}/locations/{location_id}/aspectTypes/{aspect_type_id}`.
@@ -1348,7 +1365,7 @@ message LookupEntryRequest {
 
 message SearchEntriesRequest {
   // Required. The project to which the request should be attributed in the
-  // following form: `projects/{project}/locations/{location}`.
+  // following form: `projects/{project}/locations/global`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -1357,7 +1374,7 @@ message SearchEntriesRequest {
   ];
 
   // Required. The query against which entries in scope should be matched.
-  // The query syntax is defined in [Search syntax for Dataplex
+  // The query syntax is defined in [Search syntax for Dataplex Universal
   // Catalog](https://cloud.google.com/dataplex/docs/search-syntax).
   string query = 2 [(google.api.field_behavior) = REQUIRED];
 
@@ -1373,7 +1390,7 @@ message SearchEntriesRequest {
   // Optional. Specifies the ordering of results.
   // Supported values are:
   //
-  // * `relevance` (default)
+  // * `relevance`
   // * `last_modified_timestamp`
   // * `last_modified_timestamp asc`
   string order_by = 5 [(google.api.field_behavior) = OPTIONAL];
@@ -1383,6 +1400,10 @@ message SearchEntriesRequest {
   // unspecified, it defaults to the organization where the project provided in
   // `name` is located.
   string scope = 7 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Specifies whether the search should understand the meaning and
+  // intent behind the query, rather than just matching keywords.
+  bool semantic_search = 11 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // A single result of a SearchEntries request.
@@ -1434,23 +1455,31 @@ message ImportItem {
   // Information about an entry and its attached aspects.
   Entry entry = 1;
 
+  // Information about the entry link. User should provide either one of the
+  // entry or entry_link. While providing entry_link, user should not
+  // provide update_mask and aspect_keys.
+  EntryLink entry_link = 4;
+
   // The fields to update, in paths that are relative to the `Entry` resource.
   // Separate each field with a comma.
   //
-  // In `FULL` entry sync mode, Dataplex includes the paths of all of the fields
-  // for an entry that can be modified, including aspects. This means that
-  // Dataplex replaces the existing entry with the entry in the metadata import
-  // file. All modifiable fields are updated, regardless of the fields that are
-  // listed in the update mask, and regardless of whether a field is present
-  // in the `entry` object.
-  //
+  // In `FULL` entry sync mode, Dataplex Universal Catalog includes the paths of
+  // all of the fields for an entry that can be modified, including aspects.
+  // This means that Dataplex Universal Catalog replaces the existing entry with
+  // the entry in the metadata import file. All modifiable fields are updated,
+  // regardless of the fields that are listed in the update mask, and regardless
+  // of whether a field is present in the `entry` object.
   //
   // The `update_mask` field is ignored when an entry is created or re-created.
   //
-  // Dataplex also determines which entries and aspects to modify by comparing
-  // the values and timestamps that you provide in the metadata import file with
-  // the values and timestamps that exist in your project. For more information,
-  // see [Comparison
+  // In an aspect-only metadata job (when entry sync mode is `NONE`), set this
+  // value to `aspects`.
+  //
+  //
+  // Dataplex Universal Catalog also determines which entries and aspects to
+  // modify by comparing the values and timestamps that you provide in the
+  // metadata import file with the values and timestamps that exist in your
+  // project. For more information, see [Comparison
   // logic](https://cloud.google.com/dataplex/docs/import-metadata#data-modification-logic).
   google.protobuf.FieldMask update_mask = 2;
 
@@ -1460,17 +1489,17 @@ message ImportItem {
   // aspect type and are attached directly to the entry.
   // * `{aspect_type_reference}@{path}`: matches aspects that belong to the
   // specified aspect type and path.
-  // * `<aspect_type_reference>@*` : matches aspects of the given type for all
+  // * `{aspect_type_reference}@*` : matches aspects of the given type for all
   // paths.
   // * `*@path` : matches aspects of all types on the given path.
+  //
   // Replace `{aspect_type_reference}` with a reference to the aspect type, in
   // the format
   // `{project_id_or_number}.{location_id}.{aspect_type_id}`.
   //
-  // If you leave this field empty, it is treated as specifying exactly those
-  // aspects that are present within the specified entry.
-  //
-  // In `FULL` entry sync mode, Dataplex implicitly adds the keys for all of the
+  // In `FULL` entry sync mode, if you leave this field empty, it is treated as
+  // specifying exactly those aspects that are present within the specified
+  // entry. Dataplex Universal Catalog implicitly adds the keys for all of the
   // required aspects of an entry.
   repeated string aspect_keys = 3;
 }
@@ -1600,29 +1629,68 @@ message MetadataJob {
     // Output only. The time when the status was updated.
     google.protobuf.Timestamp update_time = 5
         [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // Output only. The total number of entry links that were successfully
+    // deleted.
+    int64 deleted_entry_links = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // Output only. The total number of entry links that were successfully
+    // created.
+    int64 created_entry_links = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // Output only. The total number of entry links that were left unchanged.
+    int64 unchanged_entry_links = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
   }
 
-  // Job specification for a metadata import job
+  // Summary results from a metadata export job. The results are a snapshot of
+  // the metadata at the time when the job was created. The exported entries are
+  // saved to a Cloud Storage bucket.
+  message ExportJobResult {
+    // Output only. The number of entries that were exported.
+    int64 exported_entries = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // Output only. The error message if the metadata export job failed.
+    string error_message = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  }
+
+  // Job specification for a metadata import job.
+  //
+  // You can run the following kinds of metadata import jobs:
+  //
+  // * Full sync of entries with incremental import of their aspects.
+  // Supported for custom entries.
+  // * Incremental import of aspects only. Supported for aspects that belong
+  // to custom entries and system entries. For custom entries, you can modify
+  // both optional aspects and required aspects. For system entries, you can
+  // modify optional aspects.
   message ImportJobSpec {
-    // Specifies how the entries and aspects in a metadata job are updated.
+    // Specifies how the entries and aspects in a metadata import job are
+    // updated. For more information, see [Sync
+    // mode](https://cloud.google.com/dataplex/docs/import-metadata#sync-mode).
     enum SyncMode {
       // Sync mode unspecified.
       SYNC_MODE_UNSPECIFIED = 0;
 
       // All resources in the job's scope are modified. If a resource exists in
-      // Dataplex but isn't included in the metadata import file, the resource
-      // is deleted when you run the metadata job. Use this mode to perform a
-      // full sync of the set of entries in the job scope.
+      // Dataplex Universal Catalog but isn't included in the metadata import
+      // file, the resource is deleted when you run the metadata job. Use this
+      // mode to perform a full sync of the set of entries in the job scope.
+      //
+      // This sync mode is supported for entries.
       FULL = 1;
 
-      // Only the entries and aspects that are explicitly included in the
+      // Only the resources that are explicitly included in the
       // metadata import file are modified. Use this mode to modify a subset of
       // resources while leaving unreferenced resources unchanged.
+      //
+      // This sync mode is supported for aspects.
       INCREMENTAL = 2;
 
-      // If entry sync mode is NONE, then the entry-specific fields (apart from
-      // aspects) are not modified and the aspects are modified according to the
-      // aspect_sync_mode
+      // If entry sync mode is `NONE`, then aspects are modified according
+      // to the aspect sync mode. Other metadata that belongs to entries in the
+      // job's scope isn't modified.
+      //
+      // This sync mode is supported for entries.
       NONE = 3;
     }
 
@@ -1654,8 +1722,8 @@ message MetadataJob {
       // Required. The entry group that is in scope for the import job,
       // specified as a relative resource name in the format
       // `projects/{project_number_or_id}/locations/{location_id}/entryGroups/{entry_group_id}`.
-      // Only entries that belong to the specified entry group are affected by
-      // the job.
+      // Only entries and aspects that belong to the specified entry group are
+      // affected by the job.
       //
       // Must contain exactly one element. The entry group and the job
       // must be in the same location.
@@ -1669,7 +1737,8 @@ message MetadataJob {
       // Required. The entry types that are in scope for the import job,
       // specified as relative resource names in the format
       // `projects/{project_number_or_id}/locations/{location_id}/entryTypes/{entry_type_id}`.
-      // The job modifies only the entries that belong to these entry types.
+      // The job modifies only the entries and aspects that belong to these
+      // entry types.
       //
       // If the metadata import file attempts to modify an entry whose type
       // isn't included in this list, the import job is halted before modifying
@@ -1689,6 +1758,8 @@ message MetadataJob {
       // `projects/{project_number_or_id}/locations/{location_id}/aspectTypes/{aspect_type_id}`.
       // The job modifies only the aspects that belong to these aspect types.
       //
+      // This field is required when creating an aspect-only import job.
+      //
       // If the metadata import file attempts to modify an aspect whose type
       // isn't included in this list, the import job is halted before modifying
       // any entries or aspects.
@@ -1701,6 +1772,49 @@ message MetadataJob {
           type: "dataplex.googleapis.com/AspectType"
         }
       ];
+
+      // Optional. The glossaries that are in scope for the import job,
+      // specified as relative resource names in the format
+      // `projects/{project_number_or_id}/locations/{location_id}/glossaries/{glossary_id}`.
+      //
+      // While importing Business Glossary entries, the user must
+      // provide glossaries. While importing entries, the user does not have to
+      // provide glossaries. If the metadata import file attempts to modify
+      // Business Glossary entries whose glossary isn't included in this list,
+      // the import job will skip those entries.
+      //
+      // The location of a glossary must either match the location of the
+      // job, or the glossary must be global.
+      repeated string glossaries = 4 [
+        (google.api.field_behavior) = OPTIONAL,
+        (google.api.resource_reference) = {
+          type: "dataplex.googleapis.com/Glossary"
+        }
+      ];
+
+      // Optional. The entry link types that are in scope for the import job,
+      // specified as relative resource names in the format
+      // `projects/{project_number_or_id}/locations/{location_id}/entryLinkTypes/{entry_link_type_id}`.
+      // The job modifies only the entryLinks that belong to these entry link
+      // types.
+      //
+      // If the metadata import file attempts to create or delete an entry link
+      // whose entry link type isn't included in this list, the import job will
+      // skip those entry links.
+      repeated string entry_link_types = 5
+          [(google.api.field_behavior) = OPTIONAL];
+
+      // Optional. Defines the scope of entries that can be referenced in the
+      // entry links.
+      //
+      // Currently, projects are supported as valid scopes.
+      // Format: `projects/{project_number_or_id}`
+      //
+      // If the metadata import file attempts to create an entry link
+      // which references an entry that is not in the scope, the import job will
+      // skip that entry link.
+      repeated string referenced_entry_scopes = 6
+          [(google.api.field_behavior) = OPTIONAL];
     }
 
     // Optional. The URI of a Cloud Storage bucket or folder (beginning with
@@ -1708,8 +1822,9 @@ message MetadataJob {
     // this job.
     //
     // A metadata import file defines the values to set for each of the entries
-    // and aspects in a metadata job. For more information about how to create a
-    // metadata import file and the file requirements, see [Metadata import
+    // and aspects in a metadata import job. For more information about how to
+    // create a metadata import file and the file requirements, see [Metadata
+    // import
     // file](https://cloud.google.com/dataplex/docs/import-metadata#metadata-import-file).
     //
     // You can provide multiple metadata import files in the same metadata job.
@@ -1733,15 +1848,9 @@ message MetadataJob {
     ImportJobScope scope = 2 [(google.api.field_behavior) = REQUIRED];
 
     // Required. The sync mode for entries.
-    // Only `FULL` mode is supported for entries. All entries in the job's scope
-    // are modified. If an entry exists in Dataplex but isn't included in the
-    // metadata import file, the entry is deleted when you run the metadata job.
     SyncMode entry_sync_mode = 3 [(google.api.field_behavior) = REQUIRED];
 
     // Required. The sync mode for aspects.
-    // Only `INCREMENTAL` mode is supported for aspects. An aspect is modified
-    // only if the metadata import file includes a reference to the aspect in
-    // the `update_mask` field and the `aspect_keys` field.
     SyncMode aspect_sync_mode = 4 [(google.api.field_behavior) = REQUIRED];
 
     // Optional. The level of logs to write to Cloud Logging for this job.
@@ -1755,6 +1864,85 @@ message MetadataJob {
     LogLevel log_level = 6 [(google.api.field_behavior) = OPTIONAL];
   }
 
+  // Job specification for a metadata export job.
+  message ExportJobSpec {
+    // The scope of the export job.
+    message ExportJobScope {
+      // Whether the metadata export job is an organization-level export job.
+      //
+      // - If `true`, the job exports the entries from the same organization and
+      // VPC Service Controls perimeter as the job. The project that the job
+      // belongs to determines the VPC Service Controls perimeter. If you set
+      // the job scope to be at the organization level, then don't provide a
+      // list of projects or entry groups.
+      // - If `false`, you must specify a list of projects or a list of entry
+      // groups whose entries you want to export.
+      //
+      // The default is `false`.
+      bool organization_level = 1;
+
+      // The projects whose metadata you want to export, in the format
+      // `projects/{project_id_or_number}`. Only the entries from
+      // the specified projects are exported.
+      //
+      // The projects must be in the same organization and VPC Service Controls
+      // perimeter as the job.
+      //
+      // If you set the job scope to be a list of projects, then set the
+      // organization-level export flag to false and don't provide a list of
+      // entry groups.
+      repeated string projects = 2 [(google.api.resource_reference) = {
+        type: "cloudresourcemanager.googleapis.com/Project"
+      }];
+
+      // The entry groups whose metadata you want to export, in the format
+      // `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}`.
+      // Only the entries in the specified entry groups are exported.
+      //
+      // The entry groups must be in the same location and the same VPC Service
+      // Controls perimeter as the job.
+      //
+      // If you set the job scope to be a list of entry groups, then set the
+      // organization-level export flag to false and don't provide a list of
+      // projects.
+      repeated string entry_groups = 3 [(google.api.resource_reference) = {
+        type: "dataplex.googleapis.com/EntryGroup"
+      }];
+
+      // The entry types that are in scope for the export job, specified as
+      // relative resource names in the format
+      // `projects/{project_id_or_number}/locations/{location}/entryTypes/{entry_type_id}`.
+      // Only entries that belong to the specified entry types are affected by
+      // the job.
+      repeated string entry_types = 4 [(google.api.resource_reference) = {
+        type: "dataplex.googleapis.com/EntryType"
+      }];
+
+      // The aspect types that are in scope for the export job, specified as
+      // relative resource names in the format
+      // `projects/{project_id_or_number}/locations/{location}/aspectTypes/{aspect_type_id}`.
+      // Only aspects that belong to the specified aspect types are affected by
+      // the job.
+      repeated string aspect_types = 5 [(google.api.resource_reference) = {
+        type: "dataplex.googleapis.com/AspectType"
+      }];
+    }
+
+    // Required. The scope of the export job.
+    ExportJobScope scope = 2 [(google.api.field_behavior) = REQUIRED];
+
+    // Required. The root path of the Cloud Storage bucket to export the
+    // metadata to, in the format `gs://{bucket}/`. You can optionally specify a
+    // custom prefix after the bucket name, in the format
+    // `gs://{bucket}/{prefix}/`. The maximum length of the custom prefix is 128
+    // characters. Dataplex Universal Catalog constructs the object path for the
+    // exported files by using the bucket name and prefix that you provide,
+    // followed by a system-generated path.
+    //
+    // The bucket must be in the same VPC Service Controls perimeter as the job.
+    string output_path = 3 [(google.api.field_behavior) = REQUIRED];
+  }
+
   // Metadata job type.
   enum Type {
     // Unspecified.
@@ -1762,6 +1950,9 @@ message MetadataJob {
 
     // Import job.
     IMPORT = 1;
+
+    // Export job.
+    EXPORT = 2;
   }
 
   // Metadata job status.
@@ -1840,11 +2031,18 @@ message MetadataJob {
   oneof spec {
     // Import job specification.
     ImportJobSpec import_spec = 100;
+
+    // Export job specification.
+    ExportJobSpec export_spec = 101;
   }
 
   oneof result {
     // Output only. Import job result.
     ImportJobResult import_result = 200
+        [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // Output only. Export job result.
+    ExportJobResult export_result = 201
         [(google.api.field_behavior) = OUTPUT_ONLY];
   }
 
@@ -1888,4 +2086,135 @@ enum TransferStatus {
   // Indicates that a resource was transferred from Data Catalog service. The
   // resource can only be updated from Dataplex API.
   TRANSFER_STATUS_TRANSFERRED = 2;
+}
+
+// EntryLink represents a link between two Entries.
+message EntryLink {
+  option (google.api.resource) = {
+    type: "dataplex.googleapis.com/EntryLink"
+    pattern: "projects/{project}/locations/{location}/entryGroups/{entry_group}/entryLinks/{entry_link}"
+    plural: "entryLinks"
+    singular: "entryLink"
+  };
+
+  // Reference to the Entry that is linked through the Entry Link.
+  message EntryReference {
+    // Reference type of the Entry.
+    enum Type {
+      // Unspecified reference type. Implies that the Entry is referenced
+      // in a non-directional Entry Link.
+      UNSPECIFIED = 0;
+
+      // The Entry is referenced as the source of the directional Entry Link.
+      SOURCE = 2;
+
+      // The Entry is referenced as the target of the directional Entry Link.
+      TARGET = 3;
+    }
+
+    // Required. Immutable. The relative resource name of the referenced Entry,
+    // of the form:
+    // `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entries/{entry_id}`
+    string name = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      (google.api.field_behavior) = IMMUTABLE
+    ];
+
+    // Immutable. The path in the Entry that is referenced in the Entry Link.
+    // Empty path denotes that the Entry itself is referenced in the Entry
+    // Link.
+    string path = 2 [(google.api.field_behavior) = IMMUTABLE];
+
+    // Required. Immutable. The reference type of the Entry.
+    Type type = 3 [
+      (google.api.field_behavior) = REQUIRED,
+      (google.api.field_behavior) = IMMUTABLE
+    ];
+  }
+
+  // Output only. Immutable. Identifier. The relative resource name of the Entry
+  // Link, of the form:
+  // `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entryLinks/{entry_link_id}`
+  string name = 1 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.field_behavior) = IMMUTABLE,
+    (google.api.field_behavior) = IDENTIFIER,
+    (google.api.resource_reference) = {
+      type: "dataplex.googleapis.com/EntryLink"
+    }
+  ];
+
+  // Required. Immutable. Relative resource name of the Entry Link Type used to
+  // create this Entry Link. For example:
+  //
+  // - Entry link between synonym terms in a glossary:
+  // `projects/dataplex-types/locations/global/entryLinkTypes/synonym`
+  // - Entry link between related terms in a glossary:
+  // `projects/dataplex-types/locations/global/entryLinkTypes/related`
+  // - Entry link between glossary terms and data assets:
+  // `projects/dataplex-types/locations/global/entryLinkTypes/definition`
+  string entry_link_type = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = IMMUTABLE
+  ];
+
+  // Output only. The time when the Entry Link was created.
+  google.protobuf.Timestamp create_time = 3
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. The time when the Entry Link was last updated.
+  google.protobuf.Timestamp update_time = 4
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Required. Specifies the Entries referenced in the Entry Link. There should
+  // be exactly two entry references.
+  repeated EntryReference entry_references = 10
+      [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for CreateEntryLink.
+message CreateEntryLinkRequest {
+  // Required. The resource name of the parent Entry Group:
+  // `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}`.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {
+      type: "dataplex.googleapis.com/EntryGroup"
+    }
+  ];
+
+  // Required. Entry Link identifier
+  // * Must contain only lowercase letters, numbers and hyphens.
+  // * Must start with a letter.
+  // * Must be between 1-63 characters.
+  // * Must end with a number or a letter.
+  // * Must be unique within the EntryGroup.
+  string entry_link_id = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Required. Entry Link resource.
+  EntryLink entry_link = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for DeleteEntryLink.
+message DeleteEntryLinkRequest {
+  // Required. The resource name of the Entry Link:
+  // `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entryLinks/{entry_link_id}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {
+      type: "dataplex.googleapis.com/EntryLink"
+    }
+  ];
+}
+
+// Request message for GetEntryLink.
+message GetEntryLinkRequest {
+  // Required. The resource name of the Entry Link:
+  // `projects/{project_id_or_number}/locations/{location_id}/entryGroups/{entry_group_id}/entryLinks/{entry_link_id}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {
+      type: "dataplex.googleapis.com/EntryLink"
+    }
+  ];
 }

@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
 import "google/shopping/merchant/products/v1beta/products_common.proto";
 import "google/shopping/type/types.proto";
 
@@ -35,9 +36,14 @@ service ProductInputsService {
   option (google.api.default_host) = "merchantapi.googleapis.com";
   option (google.api.oauth_scopes) = "https://www.googleapis.com/auth/content";
 
-  // Uploads a product input to your Merchant Center account. If an input
-  // with the same contentLanguage, offerId, and dataSource already exists,
-  // this method replaces that entry.
+  // [Uploads a product input to your Merchant Center
+  // account](/merchant/api/guides/products/overview#upload-product-input). You
+  // must have a products data source to be able to insert a product. The unique
+  // identifier of the data source is passed as a query parameter in the request
+  // URL.
+  //
+  // If an input with the same contentLanguage, offerId, and dataSource already
+  // exists, this method replaces that entry.
   //
   // After inserting, updating, or deleting a product input, it may take several
   // minutes before the processed product can be retrieved.
@@ -46,6 +52,18 @@ service ProductInputsService {
       post: "/products/v1beta/{parent=accounts/*}/productInputs:insert"
       body: "product_input"
     };
+  }
+
+  // Updates the existing product input in your Merchant Center account.
+  //
+  // After inserting, updating, or deleting a product input, it may take several
+  // minutes before the processed product can be retrieved.
+  rpc UpdateProductInput(UpdateProductInputRequest) returns (ProductInput) {
+    option (google.api.http) = {
+      patch: "/products/v1beta/{product_input.name=accounts/*/productInputs/*}"
+      body: "product_input"
+    };
+    option (google.api.method_signature) = "product_input,update_mask";
   }
 
   // Deletes a product input from your Merchant Center account.
@@ -62,26 +80,31 @@ service ProductInputsService {
 }
 
 // This resource represents input data you submit for a product, not the
-// processed product that you see in Merchant Center, in Shopping ads, or across
-// Google surfaces. Product inputs, rules and supplemental data source data are
-// combined to create the processed
-// [Product][google.shopping.merchant.products.v1beta.Product].
+//  processed product that you see in Merchant Center, in Shopping ads, or
+//  across Google surfaces. Product inputs, rules and supplemental data source
+//  data are combined to create the processed
+//  [Product][google.shopping.merchant.products.v1beta.Product]. For more
+//  information, see [Manage products](/merchant/api/guides/products/overview).
 //
-// Required product input attributes to pass data validation checks are
-// primarily defined in the [Products Data
-// Specification](https://support.google.com/merchants/answer/188494).
+//  Required product input attributes to pass data validation checks are
+//  primarily defined in the [Products Data
+//  Specification](https://support.google.com/merchants/answer/188494).
 //
-// The following attributes are required:
-// [feedLabel][google.shopping.merchant.products.v1beta.Product.feed_label],
-// [contentLanguage][google.shopping.merchant.products.v1beta.Product.content_language]
-// and [offerId][google.shopping.merchant.products.v1beta.Product.offer_id].
+//  The following attributes are required:
+//  [feedLabel][google.shopping.merchant.products.v1beta.Product.feed_label],
+//  [contentLanguage][google.shopping.merchant.products.v1beta.Product.content_language]
+//  and [offerId][google.shopping.merchant.products.v1beta.Product.offer_id].
 //
-// After inserting, updating, or deleting a product input, it may take several
-// minutes before the processed product can be retrieved.
+//  After inserting, updating, or deleting a product input, it may take several
+//  minutes before the processed product can be retrieved.
 //
-// All fields in the product input and its sub-messages match the English name
-// of their corresponding attribute in the vertical spec with [some
-// exceptions](https://support.google.com/merchants/answer/7052112).
+//  All fields in the product input and its sub-messages match the English name
+//  of their corresponding attribute in the [Products Data
+//  Specification](https://support.google.com/merchants/answer/188494) with
+//  [some exceptions](https://support.google.com/merchants/answer/7052112).
+//  The following reference documentation lists the field names in the
+//  **camelCase** casing style while the Products Data Specification lists the
+//  names in the **snake_case** casing style.
 message ProductInput {
   option (google.api.resource) = {
     type: "merchantapi.googleapis.com/ProductInput"
@@ -91,26 +114,22 @@ message ProductInput {
   };
 
   // Identifier. The name of the product input.
-  // Format:
-  // `"{productinput.name=accounts/{account}/productInputs/{productinput}}"`
+  // Format: `accounts/{account}/productInputs/{productinput}`
   // where the last section `productinput` consists of 4 parts:
-  // channel~content_language~feed_label~offer_id
+  // `channel~content_language~feed_label~offer_id`
   // example for product input name is
-  // "accounts/123/productInputs/online~en~US~sku123"
+  // `accounts/123/productInputs/online~en~US~sku123`
   string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
   // Output only. The name of the processed product.
-  // Format:
-  // `"{product.name=accounts/{account}/products/{product}}"`
+  // Format: `accounts/{account}/products/{product}`
   string product = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
 
-  // Required. Immutable. The
+  // Immutable. The
   // [channel](https://support.google.com/merchants/answer/7361332) of the
   // product.
-  google.shopping.type.Channel.ChannelEnum channel = 3 [
-    (google.api.field_behavior) = REQUIRED,
-    (google.api.field_behavior) = IMMUTABLE
-  ];
+  google.shopping.type.Channel.ChannelEnum channel = 3
+      [(google.api.field_behavior) = IMMUTABLE];
 
   // Required. Immutable. Your unique identifier for the product. This is the
   // same for the product input and processed product. Leading and trailing
@@ -131,17 +150,19 @@ message ProductInput {
     (google.api.field_behavior) = IMMUTABLE
   ];
 
-  // Required. Immutable. The [feed
-  // label](https://developers.google.com/shopping-content/guides/products/feed-labels)
-  // for the product.
+  // Required. Immutable. The label that lets you categorize and identify your
+  // products. The maximum allowed characters are 20, and the supported
+  // characters are `A-Z`, `0-9`, hyphen, and underscore. The feed label must
+  // not include any spaces. For more information, see [Using feed
+  // labels](//support.google.com/merchants/answer/14994087).
   string feed_label = 6 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.field_behavior) = IMMUTABLE
   ];
 
-  // Optional. Represents the existing version (freshness) of the product, which
-  // can be used to preserve the right order when multiple updates are done at
-  // the same time.
+  // Optional. Immutable. Represents the existing version (freshness) of the
+  // product, which can be used to preserve the right order when multiple
+  // updates are done at the same time.
   //
   // If set, the insertion is prevented when version number is lower than
   // the current version number of the existing product. Re-insertion (for
@@ -149,10 +170,15 @@ message ProductInput {
   // `version_number`.
   //
   // Only supported for insertions into primary data sources.
+  // Do not set this field for updates.
+  // Do not set this field for insertions into supplemental data sources.
   //
   // If the operation is prevented, the aborted exception will be
   // thrown.
-  optional int64 version_number = 7 [(google.api.field_behavior) = OPTIONAL];
+  optional int64 version_number = 7 [
+    (google.api.field_behavior) = OPTIONAL,
+    (google.api.field_behavior) = IMMUTABLE
+  ];
 
   // Optional. A list of product attributes.
   Attributes attributes = 8 [(google.api.field_behavior) = OPTIONAL];
@@ -162,7 +188,7 @@ message ProductInput {
   // form (for example,
   // `{ "name": "size type", "value": "regular" }`).
   // This is useful for submitting attributes not explicitly exposed by the
-  // API, such as additional attributes used for Buy on Google.
+  // API.
   // Maximum allowed number of characters for each
   // custom attribute is 10240 (represents sum of characters for name and
   // value). Maximum 2500 custom attributes can be set per product, with total
@@ -175,7 +201,7 @@ message ProductInput {
 // Request message for the InsertProductInput method.
 message InsertProductInputRequest {
   // Required. The account where this product will be inserted.
-  // Format: accounts/{account}
+  // Format: `accounts/{account}`
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -188,19 +214,62 @@ message InsertProductInputRequest {
 
   // Required. The primary or supplemental product data source name. If the
   // product already exists and data source provided is different, then the
-  // product will be moved to a new data source. Format:
-  // `accounts/{account}/dataSources/{datasource}`.
+  // product will be moved to a new data source. For more information, see
+  // [Overview of Data sources
+  // sub-API](/merchant/api/guides/data-sources/overview).
+  //
+  // Only API data sources are supported.
+  //
+  // Format: `accounts/{account}/dataSources/{datasource}`. For example,
+  // `accounts/123456/dataSources/104628`.
+  string data_source = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for the UpdateProductInput method.
+// The product (primary input) must exist for the update to succeed.
+// If the update is for a primary product input, the existing primary product
+// input must be from the same data source.
+message UpdateProductInputRequest {
+  // Required. The product input resource to update. Information you submit will
+  // be applied to the processed product as well.
+  ProductInput product_input = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Optional. The list of product attributes to be updated.
+  //
+  // If the update mask is omitted, then it is treated as implied field mask
+  // equivalent to all fields that are populated (have a non-empty value).
+  //
+  // Attributes specified in the update mask without a value specified in the
+  // body will be deleted from the product.
+  //
+  // Update mask can only be specified for top level fields in
+  // attributes and custom attributes.
+  //
+  // To specify the update mask for custom attributes you need to add the
+  // `custom_attribute.` prefix.
+  //
+  // Providing special "*" value for full product replacement is not supported.
+  google.protobuf.FieldMask update_mask = 2
+      [(google.api.field_behavior) = OPTIONAL];
+
+  // Required. The primary or supplemental product data source where
+  // `data_source` name identifies the product input to be updated.
+  //
+  // Only API data sources are supported.
+  //
+  // Format: `accounts/{account}/dataSources/{datasource}`. For example,
+  // `accounts/123456/dataSources/104628`.
   string data_source = 3 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Request message for the DeleteProductInput method.
 message DeleteProductInputRequest {
   // Required. The name of the product input resource to delete.
-  // Format: accounts/{account}/productInputs/{product}
+  // Format: `accounts/{account}/productInputs/{product}`
   // where the last section `product` consists of 4 parts:
-  // channel~content_language~feed_label~offer_id
+  // `channel~content_language~feed_label~offer_id`
   // example for product name is
-  // "accounts/123/productInputs/online~en~US~sku123"
+  // `accounts/123/productInputs/online~en~US~sku123`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -210,6 +279,7 @@ message DeleteProductInputRequest {
 
   // Required. The primary or supplemental data source from which the product
   // input should be deleted. Format:
-  // `accounts/{account}/dataSources/{datasource}`.
+  // `accounts/{account}/dataSources/{datasource}`. For example,
+  // `accounts/123456/dataSources/104628`.
   string data_source = 2 [(google.api.field_behavior) = REQUIRED];
 }

@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -117,6 +117,8 @@ message Order {
 
   // Valid types of an Order.
   enum Type {
+    option allow_alias = true;
+
     // Type of the order is unspecified.
     TYPE_UNSPECIFIED = 0;
 
@@ -125,6 +127,27 @@ message Order {
 
     // Proof of concept for the customer.
     POC = 2;
+
+    // Not billed.
+    UNPAID = 2;
+  }
+
+  // Valid types of a deployment.
+  enum DeploymentType {
+    // Deployment type is unspecified.
+    DEPLOYMENT_TYPE_UNSPECIFIED = 0;
+
+    // Prod deployment with SLOs.
+    FULL_PRODUCTION = 1;
+
+    // Deployment with best-effort support and no SLOs.
+    PROOF_OF_CONCEPT = 2;
+
+    // Internal deployment with best-effort support and no SLOs.
+    INTERNAL = 3;
+
+    // Customer lab deployment that we support as though it's prod.
+    CUSTOMER_LAB = 4;
   }
 
   // Identifier. Name of this order.
@@ -164,10 +187,13 @@ message Order {
   // length of this field must be <= 1000 characters.
   string customer_motivation = 8 [(google.api.field_behavior) = REQUIRED];
 
-  // Required. Customer specified deadline by when this order should be
-  // fulfilled.
+  // Deprecated: Please use customer_requested_installation_date instead.
   google.protobuf.Timestamp fulfillment_time = 9
-      [(google.api.field_behavior) = REQUIRED];
+      [deprecated = true, (google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Customer requested installation date for this order.
+  google.type.Date customer_requested_installation_date = 21
+      [(google.api.field_behavior) = OPTIONAL];
 
   // Required. [Unicode CLDR](http://cldr.unicode.org/) region code where this
   // order will be deployed. For a list of valid CLDR region codes, see the
@@ -186,13 +212,49 @@ message Order {
   google.protobuf.Timestamp submit_time = 14
       [(google.api.field_behavior) = OUTPUT_ONLY];
 
-  // Required. The Google Cloud Billing ID to be charged for this order.
-  string billing_id = 15 [(google.api.field_behavior) = REQUIRED];
+  // Output only. The Google Cloud Billing ID to be charged for this order.
+  string billing_id = 15 [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Optional. Existing hardware to be removed as part of this order.
   // Note: any hardware removed will be recycled unless otherwise agreed.
   repeated HardwareLocation existing_hardware = 16
       [(google.api.field_behavior) = OPTIONAL];
+
+  // Output only. The deployment type of this order.
+  DeploymentType deployment_type = 18
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Actual installation date for this order.
+  google.type.Date actual_installation_date = 19
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Estimated installation date for this order.
+  google.type.Date estimated_installation_date = 20
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Estimated delivery date for this order.
+  google.type.Date estimated_delivery_date = 22
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Optional. Whether this order is a migration from customer's existing
+  // infrastructure.
+  bool migration = 23 [(google.api.field_behavior) = OPTIONAL];
+
+  // Output only. The time when the order was moved to ACCEPTED state.
+  google.protobuf.Timestamp accepted_time = 24
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. The date to which the customer or Google wants to set the
+  // scheduled installation date.
+  google.type.Date requested_date_change = 25
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Notes for this order, provided by the vendor.
+  string vendor_notes = 26 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Contact information of the SI assigned to this order.
+  OrganizationContact vendor_contact = 27
+      [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // A physical site where hardware will be installed.
@@ -342,10 +404,10 @@ message HardwareGroup {
     }
   ];
 
-  // Optional. Requested installation date for the hardware in this
-  // HardwareGroup. Filled in by the customer.
+  // Deprecated: This value is not used. Use the requested_installation_date
+  // field in the Order resource instead.
   google.type.Date requested_installation_date = 10
-      [(google.api.field_behavior) = OPTIONAL];
+      [deprecated = true, (google.api.field_behavior) = OPTIONAL];
 }
 
 // An instance of hardware installed at a site.
@@ -543,6 +605,10 @@ message Hardware {
   // Output only. Per machine asset information needed for turnup.
   repeated MachineInfo machine_infos = 20
       [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. The estimated delivery date of the hardware.
+  google.type.Date estimated_delivery_date = 21
+      [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // A comment on an order.
@@ -621,6 +687,15 @@ message Sku {
     singular: "sku"
   };
 
+  // Inclusive range.
+  message Range {
+    // The minimum value of the range.
+    int32 min = 1;
+
+    // The maximum value of the range.
+    int32 max = 2;
+  }
+
   // Valid types of a SKU.
   enum Type {
     // Type of the SKU is unspecified. This is not an allowed value.
@@ -673,6 +748,11 @@ message Sku {
 
   // Output only. The vCPU count associated with this SKU.
   int32 vcpu_count = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. The inclusive ranges of hardware counts that are allowed in a
+  // zone using this SKU.
+  repeated Range hardware_count_ranges = 13
+      [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // A zone holding a set of hardware.
@@ -697,6 +777,9 @@ message Zone {
 
     // Factory turnup has succeeded.
     READY_FOR_CUSTOMER_FACTORY_TURNUP_CHECKS = 5;
+
+    // The Zone is running factory turnup checks.
+    CUSTOMER_FACTORY_TURNUP_CHECKS_STARTED = 8;
 
     // The Zone is ready for site turnup.
     READY_FOR_SITE_TURNUP = 6;
@@ -770,6 +853,22 @@ message Zone {
   // Output only. Provisioning state for configurations like MAC addresses.
   ProvisioningState provisioning_state = 14
       [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Optional. Whether to skip the cluster provisioning step during factory
+  // turnup. If true, indicates that the Kubernetes cluster will be created
+  // after the zone's hardware is installed at the customer site.
+  bool skip_cluster_provisioning = 16 [(google.api.field_behavior) = OPTIONAL];
+
+  // Output only. Indicates whether a valid cluster intent must be provided by
+  // the customer before accepting the order. If true, the order cannot be
+  // accepted until cluster intent is present. This is used to enforce early
+  // validation and prevent delays caused by missing configuration.
+  bool cluster_intent_required = 17 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Indicates whether the provided cluster intent has been
+  // successfully verified. This flag ensures cluster intent exists before order
+  // can be accepted.
+  bool cluster_intent_verified = 18 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // Contact information of the customer organization.
@@ -884,8 +983,21 @@ message HardwarePhysicalInfo {
     // C13.
     C_13 = 2;
 
-    // Standard european receptacle.
-    STANDARD_EU = 3;
+    // Deprecated: Please use TYPE_G_BS1363, CEE_7_3, CEE_7_5 or TYPE_F
+    // instead.
+    STANDARD_EU = 3 [deprecated = true];
+
+    // Type G / BS1363.
+    TYPE_G_BS1363 = 4;
+
+    // C 7/3.
+    CEE_7_3 = 5;
+
+    // C 7/5.
+    CEE_7_5 = 6;
+
+    // Type F.
+    TYPE_F = 7;
   }
 
   // Valid network uplink types.

@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import "google/cloud/bigquery/v2/map_target_type.proto";
 import "google/cloud/bigquery/v2/table_schema.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "cloud.google.com/go/bigquery/apiv2/bigquerypb;bigquerypb";
+option go_package = "cloud.google.com/go/bigquery/v2/apiv2/bigquerypb;bigquerypb";
 option java_outer_classname = "ExternalDataConfigProto";
 option java_package = "com.google.cloud.bigquery.v2";
 
@@ -133,6 +133,29 @@ message CsvOptions {
   // interprets the empty string as an empty value.
   google.protobuf.StringValue null_marker = 8
       [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. A list of strings represented as SQL NULL value in a CSV file.
+  //
+  // null_marker and null_markers can't be set at the same time.
+  // If null_marker is set, null_markers has to be not set.
+  // If null_markers is set, null_marker has to be not set.
+  // If both null_marker and null_markers are set at the same time, a user
+  // error would be thrown.
+  // Any strings listed in null_markers, including
+  // empty string would be interpreted as SQL NULL. This applies to all column
+  // types.
+  repeated string null_markers = 9 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Controls the strategy used to match loaded columns to the schema.
+  // If not set, a sensible default is chosen based on how the schema is
+  // provided. If autodetect is used, then columns are matched by name.
+  // Otherwise, columns are matched by position. This is done to keep the
+  // behavior backward-compatible. Acceptable values are:
+  //   POSITION - matches by position. This assumes that the columns are ordered
+  //              the same way as the schema.
+  //   NAME - matches by name. This reads the header row as column names and
+  //          reorders columns to match the field names in the schema.
+  string source_column_match = 10 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Json Options for load and make external tables.
@@ -496,4 +519,46 @@ message ExternalDataConfiguration {
   // metadata from external data source.
   MetadataCacheMode metadata_cache_mode = 24
       [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Time zone used when parsing timestamp values that do not have
+  // specific time zone information (e.g. 2024-04-20 12:34:56). The expected
+  // format is a IANA timezone string (e.g. America/Los_Angeles).
+  optional string time_zone = 27 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Format used to parse DATE values. Supports C-style and SQL-style
+  // values.
+  optional string date_format = 28 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Format used to parse DATETIME values. Supports C-style and
+  // SQL-style values.
+  optional string datetime_format = 29 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Format used to parse TIME values. Supports C-style and SQL-style
+  // values.
+  optional string time_format = 30 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Format used to parse TIMESTAMP values. Supports C-style and
+  // SQL-style values.
+  optional string timestamp_format = 31
+      [(google.api.field_behavior) = OPTIONAL];
+
+  // Precisions (maximum number of total digits in base 10) for seconds
+  // of TIMESTAMP types that are allowed to the destination table for
+  // autodetection mode.
+  //
+  // Available for the formats: CSV.
+  //
+  // For the CSV Format, Possible values include:
+  // Not Specified, [], or [6]: timestamp(6) for all auto detected TIMESTAMP
+  // columns
+  // [6, 12]: timestamp(6) for all auto detected TIMESTAMP columns that have
+  // less than 6 digits of subseconds.
+  //          timestamp(12) for all auto detected TIMESTAMP columns that have
+  //          more than 6 digits of subseconds.
+  // [12]: timestamp(12) for all auto detected TIMESTAMP columns.
+  //
+  // The order of the elements in this array is ignored.
+  // Inputs that have higher precision than the highest target precision in this
+  // array will be truncated.
+  repeated int32 timestamp_target_precision = 32;
 }

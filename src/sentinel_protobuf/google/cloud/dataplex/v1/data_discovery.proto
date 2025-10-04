@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,6 +63,40 @@ message DataDiscoverySpec {
       (google.api.field_behavior) = OPTIONAL,
       (google.api.resource_reference) = {
         type: "bigqueryconnection.googleapis.com/Connection"
+      }
+    ];
+
+    // Optional. The location of the BigQuery dataset to publish BigLake
+    // external or non-BigLake external tables to.
+    // 1. If the Cloud Storage bucket is located in a multi-region bucket, then
+    // BigQuery dataset can be in the same multi-region bucket or any single
+    // region that is included in the same multi-region bucket. The datascan can
+    // be created in any single region that is included in the same multi-region
+    // bucket
+    // 2. If the Cloud Storage bucket is located in a dual-region bucket, then
+    // BigQuery dataset can be located in regions that are included in the
+    // dual-region bucket, or in a multi-region that includes the dual-region.
+    // The datascan can be created in any single region that is included in the
+    // same dual-region bucket.
+    // 3. If the Cloud Storage bucket is located in a single region, then
+    // BigQuery dataset can be in the same single region or any multi-region
+    // bucket that includes the same single region. The datascan will be created
+    // in the same single region as the bucket.
+    // 4. If the BigQuery dataset is in single region, it must be in the same
+    // single region as the datascan.
+    //
+    // For supported values, refer to
+    // https://cloud.google.com/bigquery/docs/locations#supported_locations.
+    string location = 4 [(google.api.field_behavior) = OPTIONAL];
+
+    // Optional. The project of the BigQuery dataset to publish BigLake external
+    // or non-BigLake external tables to. If not specified, the project of the
+    // Cloud Storage bucket will be used. The format is
+    // "projects/{project_id_or_number}".
+    string project = 5 [
+      (google.api.field_behavior) = OPTIONAL,
+      (google.api.resource_reference) = {
+        type: "cloudresourcemanager.googleapis.com/Project"
       }
     ];
   }
@@ -142,18 +176,53 @@ message DataDiscoverySpec {
 message DataDiscoveryResult {
   // Describes BigQuery publishing configurations.
   message BigQueryPublishing {
-    // Output only. The BigQuery dataset to publish to. It takes the form
-    // `projects/{project_id}/datasets/{dataset_id}`.
-    // If not set, the service creates a default publishing dataset.
+    // Output only. The BigQuery dataset the discovered tables are published to.
     string dataset = 1 [
       (google.api.field_behavior) = OUTPUT_ONLY,
       (google.api.resource_reference) = {
         type: "bigquery.googleapis.com/Dataset"
       }
     ];
+
+    // Output only. The location of the BigQuery publishing dataset.
+    string location = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+  }
+
+  // Describes result statistics of a data scan discovery job.
+  message ScanStatistics {
+    // The number of files scanned.
+    int32 scanned_file_count = 1;
+
+    // The data processed in bytes.
+    int64 data_processed_bytes = 2;
+
+    // The number of files excluded.
+    int32 files_excluded = 3;
+
+    // The number of tables created.
+    int32 tables_created = 4;
+
+    // The number of tables deleted.
+    int32 tables_deleted = 5;
+
+    // The number of tables updated.
+    int32 tables_updated = 6;
+
+    // The number of filesets created.
+    int32 filesets_created = 7;
+
+    // The number of filesets deleted.
+    int32 filesets_deleted = 8;
+
+    // The number of filesets updated.
+    int32 filesets_updated = 9;
   }
 
   // Output only. Configuration for metadata publishing.
   BigQueryPublishing bigquery_publishing = 1
+      [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Describes result statistics of a data scan discovery job.
+  ScanStatistics scan_statistics = 2
       [(google.api.field_behavior) = OUTPUT_ONLY];
 }

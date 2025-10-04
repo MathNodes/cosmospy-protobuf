@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -132,6 +132,13 @@ message ExecutionConfig {
   // **This field requires a Cloud Storage bucket name, not a `gs://...` URI to
   // a Cloud Storage bucket.**
   string staging_bucket = 10 [(google.api.field_behavior) = OPTIONAL];
+
+  // Optional. Authentication configuration used to set the default identity for
+  // the workload execution. The config specifies the type of identity
+  // (service account or user) that will be used by workloads to access
+  // resources on the project(s).
+  AuthenticationConfig authentication_config = 11
+      [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Spark History Server configuration for the workload.
@@ -476,6 +483,31 @@ message GkeNodePoolConfig {
       [(google.api.field_behavior) = OPTIONAL];
 }
 
+// Authentication configuration for a workload is used to set the default
+// identity for the workload execution.
+// The config specifies the type of identity (service account or user) that
+// will be used by workloads to access resources on the project(s).
+message AuthenticationConfig {
+  // Authentication types for workload execution.
+  enum AuthenticationType {
+    // If AuthenticationType is unspecified then END_USER_CREDENTIALS is used
+    // for 3.0 and newer runtimes, and SERVICE_ACCOUNT is used for older
+    // runtimes.
+    AUTHENTICATION_TYPE_UNSPECIFIED = 0;
+
+    // Use service account credentials for authenticating to other services.
+    SERVICE_ACCOUNT = 1;
+
+    // Use OAuth credentials associated with the workload creator/user for
+    // authenticating to other services.
+    END_USER_CREDENTIALS = 2;
+  }
+
+  // Optional. Authentication type for the user workload running in containers.
+  AuthenticationType user_workload_authentication_type = 1
+      [(google.api.field_behavior) = OPTIONAL];
+}
+
 // Autotuning configuration of the workload.
 message AutotuningConfig {
   // Scenario represents a specific goal that autotuning will attempt to achieve
@@ -492,6 +524,12 @@ message AutotuningConfig {
 
     // Memory management for workloads.
     MEMORY = 4;
+
+    // No autotuning.
+    NONE = 5;
+
+    // Automatic selection of scenarios.
+    AUTO = 6;
   }
 
   // Optional. Scenarios for which tunings are applied.
@@ -523,6 +561,9 @@ enum Component {
   // Compute Engine image versions.
   ANACONDA = 5;
 
+  // Delta Lake.
+  DELTA = 20;
+
   // Docker
   DOCKER = 13;
 
@@ -541,8 +582,17 @@ enum Component {
   // Hudi.
   HUDI = 18;
 
+  // Iceberg.
+  ICEBERG = 19;
+
   // The Jupyter Notebook.
   JUPYTER = 1;
+
+  // The Jupyter Kernel Gateway.
+  JUPYTER_KERNEL_GATEWAY = 22;
+
+  // The Pig component.
+  PIG = 21;
 
   // The Presto query engine.
   PRESTO = 6;

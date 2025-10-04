@@ -7,7 +7,7 @@ import "google/api/annotations.proto";
 import "sentinel/lease/v1/lease.proto";
 import "sentinel/lease/v1/params.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/lease/types/v1";
+option go_package = "github.com/sentinel-official/sentinelhub/v12/x/lease/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
@@ -58,11 +58,11 @@ service QueryService {
   rpc QueryLeases(QueryLeasesRequest) returns (QueryLeasesResponse) {
     option (google.api.http).get = "/sentinel/lease/v1/leases";
   }
-  rpc QueryLeasesForProvider(QueryLeasesForProviderRequest) returns (QueryLeasesForProviderResponse) {
-    option (google.api.http).get = "/sentinel/lease/v1/providers/{address}/leases";
-  }
   rpc QueryLeasesForNode(QueryLeasesForNodeRequest) returns (QueryLeasesForNodeResponse) {
     option (google.api.http).get = "/sentinel/lease/v1/nodes/{address}/leases";
+  }
+  rpc QueryLeasesForProvider(QueryLeasesForProviderRequest) returns (QueryLeasesForProviderResponse) {
+    option (google.api.http).get = "/sentinel/lease/v1/providers/{address}/leases";
   }
   rpc QueryLease(QueryLeaseRequest) returns (QueryLeaseResponse) {
     option (google.api.http).get = "/sentinel/lease/v1/leases/{id}";
