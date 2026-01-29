@@ -3,12 +3,12 @@ package sentinel.provider.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/provider/types/v1";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/provider/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgRegisterRequest {
-  string frm = 1;
+  string from = 1;
   string name = 2;
   string identity = 3;
   string website = 4;
@@ -16,7 +16,7 @@ message MsgRegisterRequest {
 }
 
 message MsgUpdateRequest {
-  string frm = 1;
+  string from = 1;
   string name = 2;
   string identity = 3;
   string website = 4;

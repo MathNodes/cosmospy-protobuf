@@ -3,12 +3,12 @@ package sentinel.swap.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/swap/types/v1";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/swap/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgSwapRequest {
-  string frm = 1;
+  string from = 1;
   bytes tx_hash = 2;
   string receiver = 3;
   string amount = 4 [

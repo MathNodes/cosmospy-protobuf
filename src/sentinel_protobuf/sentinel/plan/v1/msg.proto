@@ -6,12 +6,12 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v1";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/plan/types/v1";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgAddRequest {
-  string frm = 1;
+  string from = 1;
   repeated cosmos.base.v1beta1.Coin price = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -21,25 +21,25 @@ message MsgAddRequest {
     (gogoproto.nullable) = false
   ];
   string bytes = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }
 
 message MsgAddNodeRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2;
   string address = 3;
 }
 
 message MsgRemoveNodeRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2;
   string address = 3;
 }
 
 message MsgSetStatusRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2;
   sentinel.types.v1.Status status = 3;
 }

@@ -5,17 +5,17 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "sentinel/session/v3/params.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/session/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/session/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCancelSessionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
 }
 
 message MsgUpdateSessionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string download_bytes = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
@@ -33,7 +33,7 @@ message MsgUpdateSessionRequest {
 }
 
 message MsgUpdateParamsRequest {
-  string frm = 1;
+  string from = 1;
   Params params = 2 [(gogoproto.nullable) = false];
 }
 

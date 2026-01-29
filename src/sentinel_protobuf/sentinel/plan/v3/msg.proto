@@ -7,12 +7,12 @@ import "sentinel/types/v1/price.proto";
 import "sentinel/types/v1/renewal.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/sentinelhub/v12/x/plan/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/plan/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCreatePlanRequest {
-  string frm = 1;
+  string from = 1;
   string bytes = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
@@ -26,31 +26,31 @@ message MsgCreatePlanRequest {
 }
 
 message MsgLinkNodeRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUnlinkNodeRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUpdatePlanDetailsRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   bool private = 3;
 }
 
 message MsgUpdatePlanStatusRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.Status status = 3;
 }
 
 message MsgStartSessionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;
