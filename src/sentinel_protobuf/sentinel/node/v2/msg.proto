@@ -10,7 +10,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgRegisterRequest {
-  string from = 1;
+  string frm = 1;
   repeated cosmos.base.v1beta1.Coin gigabyte_prices = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -23,7 +23,7 @@ message MsgRegisterRequest {
 }
 
 message MsgUpdateDetailsRequest {
-  string from = 1;
+  string frm = 1;
   repeated cosmos.base.v1beta1.Coin gigabyte_prices = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -36,12 +36,12 @@ message MsgUpdateDetailsRequest {
 }
 
 message MsgUpdateStatusRequest {
-  string from = 1;
+  string frm = 1;
   sentinel.types.v1.Status status = 2;
 }
 
 message MsgSubscribeRequest {
-  string from = 1;
+  string frm = 1;
   string node_address = 2;
   int64 gigabytes = 3;
   int64 hours = 4;

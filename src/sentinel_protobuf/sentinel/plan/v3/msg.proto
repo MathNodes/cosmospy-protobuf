@@ -12,7 +12,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCreatePlanRequest {
-  string from = 1;
+  string frm = 1;
   string bytes = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
@@ -26,31 +26,31 @@ message MsgCreatePlanRequest {
 }
 
 message MsgLinkNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUnlinkNodeRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUpdatePlanDetailsRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   bool private = 3;
 }
 
 message MsgUpdatePlanStatusRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.Status status = 3;
 }
 
 message MsgStartSessionRequest {
-  string from = 1;
+  string frm = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;

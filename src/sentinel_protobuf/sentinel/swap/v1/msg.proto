@@ -8,7 +8,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgSwapRequest {
-  string from = 1;
+  string frm = 1;
   bytes tx_hash = 2;
   string receiver = 3;
   string amount = 4 [

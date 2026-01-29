@@ -9,7 +9,7 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgRegisterRequest {
-  string from = 1;
+  string frm = 1;
   string name = 2;
   string identity = 3;
   string website = 4;
@@ -17,7 +17,7 @@ message MsgRegisterRequest {
 }
 
 message MsgUpdateRequest {
-  string from = 1;
+  string frm = 1;
   string name = 2;
   string identity = 3;
   string website = 4;
