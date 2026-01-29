@@ -2,15 +2,15 @@ syntax = "proto3";
 package sentinel.provider.v3;
 
 import "gogoproto/gogo.proto";
-import "sentinel/provider/v2/params.proto";
+import "sentinel/provider/v3/params.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/provider/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/provider/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgRegisterProviderRequest {
-  string frm = 1;
+  string from = 1;
   string name = 2;
   string identity = 3;
   string website = 4;
@@ -18,7 +18,7 @@ message MsgRegisterProviderRequest {
 }
 
 message MsgUpdateProviderDetailsRequest {
-  string frm = 1;
+  string from = 1;
   string name = 2;
   string identity = 3;
   string website = 4;
@@ -26,13 +26,13 @@ message MsgUpdateProviderDetailsRequest {
 }
 
 message MsgUpdateProviderStatusRequest {
-  string frm = 1;
+  string from = 1;
   sentinel.types.v1.Status status = 2;
 }
 
 message MsgUpdateParamsRequest {
-  string frm = 1;
-  sentinel.provider.v2.Params params = 2 [(gogoproto.nullable) = false];
+  string from = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgRegisterProviderResponse {}

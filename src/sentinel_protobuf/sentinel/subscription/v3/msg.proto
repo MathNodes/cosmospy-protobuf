@@ -2,26 +2,26 @@ syntax = "proto3";
 package sentinel.subscription.v3;
 
 import "gogoproto/gogo.proto";
-import "sentinel/subscription/v2/params.proto";
+import "sentinel/subscription/v3/params.proto";
 import "sentinel/types/v1/renewal.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/subscription/types/v3";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/subscription/types/v3";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCancelSubscriptionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
 }
 
 message MsgRenewSubscriptionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
 }
 
 message MsgShareSubscriptionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string acc_address = 3;
   string bytes = 4 [
@@ -31,27 +31,27 @@ message MsgShareSubscriptionRequest {
 }
 
 message MsgStartSubscriptionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 4;
 }
 
 message MsgUpdateSubscriptionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.RenewalPricePolicy renewal_price_policy = 3;
 }
 
 message MsgStartSessionRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUpdateParamsRequest {
-  string frm = 1;
-  sentinel.subscription.v2.Params params = 2 [(gogoproto.nullable) = false];
+  string from = 1;
+  Params params = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgCancelSubscriptionResponse {}

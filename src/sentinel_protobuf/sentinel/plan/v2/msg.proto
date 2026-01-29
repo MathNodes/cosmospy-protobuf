@@ -6,12 +6,12 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/plan/types/v2";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/plan/types/v2";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgCreateRequest {
-  string frm = 1;
+  string from = 1;
   google.protobuf.Duration duration = 2 [
     (gogoproto.stdduration) = true,
     (gogoproto.nullable) = false
@@ -24,25 +24,25 @@ message MsgCreateRequest {
 }
 
 message MsgLinkNodeRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUnlinkNodeRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string node_address = 3;
 }
 
 message MsgUpdateStatusRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   sentinel.types.v1.Status status = 3;
 }
 
 message MsgSubscribeRequest {
-  string frm = 1;
+  string from = 1;
   uint64 id = 2 [(gogoproto.customname) = "ID"];
   string denom = 3;
 }

@@ -2,7 +2,7 @@
   "https://github.com/googleapis/googleapis": {
     "include": true,
     "branch": "master",
-    "paths": ["google"]
+    "paths": ["google/api","google/longrunning", "google/rpc","google/security","google/type"]
   },
 
   "https://github.com/sentinel-official/hub.git": {

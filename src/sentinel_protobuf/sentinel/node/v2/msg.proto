@@ -5,12 +5,12 @@ import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "sentinel/types/v1/status.proto";
 
-option go_package = "github.com/sentinel-official/hub/v12/x/node/types/v2";
+option go_package = "github.com/sentinel-official/sentinelhub/v13/x/node/types/v2";
 option (gogoproto.equal_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 
 message MsgRegisterRequest {
-  string frm = 1;
+  string from = 1;
   repeated cosmos.base.v1beta1.Coin gigabyte_prices = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -23,7 +23,7 @@ message MsgRegisterRequest {
 }
 
 message MsgUpdateDetailsRequest {
-  string frm = 1;
+  string from = 1;
   repeated cosmos.base.v1beta1.Coin gigabyte_prices = 2 [
     (gogoproto.nullable) = false,
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"
@@ -36,12 +36,12 @@ message MsgUpdateDetailsRequest {
 }
 
 message MsgUpdateStatusRequest {
-  string frm = 1;
+  string from = 1;
   sentinel.types.v1.Status status = 2;
 }
 
 message MsgSubscribeRequest {
-  string frm = 1;
+  string from = 1;
   string node_address = 2;
   int64 gigabytes = 3;
   int64 hours = 4;
